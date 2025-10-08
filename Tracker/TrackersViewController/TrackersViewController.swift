@@ -4,10 +4,7 @@ final class TrackersViewController: UIViewController {
 
     private lazy var addButton: UIBarButtonItem = {
         let image = UIImage(named: "mainPlus")?.withRenderingMode(.alwaysOriginal)
-        let item = UIBarButtonItem(image: image,
-                                   style: .plain,
-                                   target: self,
-                                   action: #selector(addTapped))
+        let item = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(addTapped))
         return item
     }()
 
@@ -136,7 +133,6 @@ final class TrackersViewController: UIViewController {
         collectionView.isHidden = isEmpty
     }
 
-    /// Прозрачный navigation bar
     private func applyTransparentNavigationBar() {
         let mainBlack = UIColor(named: "mainBlack") ?? .label
         let largeFont = UIFont.systemFont(ofSize: 34, weight: .bold)
