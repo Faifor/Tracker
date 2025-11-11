@@ -82,6 +82,14 @@ final class TrackersViewController: UIViewController {
         return cv
     }()
 
+    var categories: [TrackerCategory] = [] {
+        didSet { updateEmptyStateVisibility() }
+    }
+
+    var completedTrackers: [TrackerRecord] = [] {
+        didSet { updateEmptyStateVisibility() }
+    }
+
     private var trackers: [String] = [] {
         didSet { updateEmptyStateVisibility() }
     }
@@ -128,7 +136,7 @@ final class TrackersViewController: UIViewController {
     }
 
     private func updateEmptyStateVisibility() {
-        let isEmpty = trackers.isEmpty
+        let isEmpty = categories.allSatisfy { $0.trackers.isEmpty }
         emptyStateView.isHidden = !isEmpty
         collectionView.isHidden = isEmpty
     }
@@ -169,6 +177,7 @@ private extension TrackersViewController {
 
 extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // Нужно обновить эту логику, чтобы использовать categories
         trackers.count
     }
 
@@ -192,3 +201,4 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         return CGSize(width: width, height: 100)
     }
 }
+
