@@ -1,25 +1,38 @@
+
 import UIKit
 
 final class StatisticsViewController: UIViewController {
-
+    
+    private lazy var statisticsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Статистика"
+        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
+        label.textColor = .blackDay
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        title = "Статистика"
-
-        let label = UILabel()
-        label.text = "-"
-        label.textColor = .secondaryLabel
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(label)
+        
+        setupUI()
+    }
+    
+    private func setupUI() {
+        configureView()
+        view.addSubview(statisticsLabel)
+        setupConstraints()
+    }
+    
+    private func configureView() {
+        view.backgroundColor = .whiteDay
+    }
+    
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            label.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 24),
-            label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -24)
+            
+            statisticsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            statisticsLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44)
         ])
     }
 }

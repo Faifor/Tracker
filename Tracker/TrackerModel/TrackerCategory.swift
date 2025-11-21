@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TrackerCategory: Equatable, Hashable {
+struct TrackerCategory {
     let title: String
     let trackers: [Tracker]
 }
