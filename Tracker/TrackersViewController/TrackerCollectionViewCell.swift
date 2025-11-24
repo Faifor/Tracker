@@ -138,7 +138,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         
         emojiLabel.text = tracker.emoji
         nameLabel.text = tracker.name
-        dayCounterLabel.text = "\(completedDays) дней"
+        dayCounterLabel.text = completedDays.daysString()
         cardView.backgroundColor = tracker.color
         updateButtonAppearance(trackerColor: tracker.color)
     }
