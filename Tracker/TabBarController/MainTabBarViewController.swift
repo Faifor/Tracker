@@ -44,3 +44,4 @@ final class MainTabBarViewController: UITabBarController {
         viewControllers = [trackersNC, statisticsNC]
     }
 }
+
