@@ -39,7 +39,7 @@ protocol TrackerStoreDelegate: AnyObject {
 
 final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>? 
     
     weak var delegate: TrackerStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -49,12 +49,19 @@ final class TrackerStore: NSObject {
     
     var tracker: [Tracker] {
         guard
-            let objects = self.fetchedResultsController.fetchedObjects else { return [] }
+            let objects = self.fetchedResultsController?.fetchedObjects else { return [] }
         return objects.compactMap{ try? decodeTracker(from: $0) }
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        guard
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        else {
+            assertionFailure("AppDelegate is not of type AppDelegate")
+            self.init(context: NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType))
+            return
+        }
+        let context = appDelegate.persistentContainer.viewContext
         self.init(context: context)
     }
     
@@ -70,16 +77,18 @@ final class TrackerStore: NSObject {
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "name", ascending: true)
         ]
-        fetchedResultsController = NSFetchedResultsController(
+        let frc = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-        fetchedResultsController.delegate = self
+        frc.delegate = self
+        
+        fetchedResultsController = frc
         
         do {
-            try fetchedResultsController.performFetch()
+            try fetchedResultsController?.performFetch()
         } catch {
             print("failed to initialize FetchedResultsController: \(error)")
         }
@@ -136,7 +145,7 @@ final class TrackerStore: NSObject {
     }
     
     func fetchAllTrackers() throws -> [Tracker] {
-        guard let trackers = fetchedResultsController.fetchedObjects else {
+        guard let trackers = fetchedResultsController?.fetchedObjects else {
             throw TrackerStoreError.fetchError(NSError(domain: "", code: -1))
         }
         return try trackers.map { try decodeTracker(from: $0)}

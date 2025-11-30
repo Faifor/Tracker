@@ -11,7 +11,11 @@ class TrackersViewController: UIViewController {
         calendar.firstWeekday = 2
         return calendar
     }()
-    private var trackerAddingButton: UIButton!
+    
+    private lazy var trackerAddingButton: UIButton = {
+        let button = UIButton()
+        return button
+    }()
     private var currentDate = Date()
     private var visibleCategories: [TrackerCategory] = []
     private var categories: [TrackerCategory] = [] {
