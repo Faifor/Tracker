@@ -7,9 +7,9 @@ protocol CategorySelectionDelegate: AnyObject {
 
 final class CategoryViewController: UIViewController {
     weak var delegate: CategorySelectionDelegate?
-
+    
     private let categories = ["Здоровье❤️", "Работа💼", "Хобби🎨", "Учёба📚", "Отдых🛌", "Спорт⚽️"]
-
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -18,7 +18,7 @@ final class CategoryViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Категория"
@@ -37,13 +37,13 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categories.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = categories[indexPath.row]
         return cell
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let category = categories[indexPath.row]
         delegate?.didSelectCategory(category)

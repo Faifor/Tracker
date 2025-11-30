@@ -166,3 +166,4 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         onCompletion?(trackerId, currentDate, isCompletedToday)
     }
 }
+
