@@ -38,7 +38,6 @@ class CreateTrackerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
     }
     
@@ -73,13 +72,11 @@ class CreateTrackerViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             
-            // Habit Button
             habitButton.heightAnchor.constraint(equalToConstant: 60),
             habitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 281),
             habitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             habitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
-            // Irregular event Button
             irregularEventButton.heightAnchor.constraint(equalToConstant: 60),
             irregularEventButton.topAnchor.constraint(equalTo: habitButton.bottomAnchor, constant: 16),
             irregularEventButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -94,3 +91,4 @@ extension CreateTrackerViewController: CreateTrackerViewControllerDelegate {
         dismiss(animated: true)
     }
 }
+
