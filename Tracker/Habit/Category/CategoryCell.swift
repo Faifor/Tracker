@@ -90,3 +90,4 @@ final class CategoryCell: UITableViewCell {
         separatorView.isHidden = false
     }
 }
+

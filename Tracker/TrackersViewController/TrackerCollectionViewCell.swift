@@ -32,7 +32,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     private lazy var emojiBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .backgroundDay
+        view.backgroundColor = .lightWhiteYP
         view.layer.cornerRadius = 12
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -100,28 +100,34 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             
+            //Card View
             cardView.heightAnchor.constraint(equalToConstant: 90),
             cardView.topAnchor.constraint(equalTo: contentView.topAnchor),
             cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
+            //Emoji Background View
             emojiBackgroundView.widthAnchor.constraint(equalToConstant: 24),
             emojiBackgroundView.heightAnchor.constraint(equalToConstant: 24),
             emojiBackgroundView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 12),
             emojiBackgroundView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             
+            // Emoji Label
             emojiLabel.centerXAnchor.constraint(equalTo: emojiBackgroundView.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: emojiBackgroundView.centerYAnchor),
             
+            // Name Label
             nameLabel.heightAnchor.constraint(equalToConstant: 34),
             nameLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
             nameLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             nameLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -12),
             
+            // Day Counter Label
             dayCounterLabel.heightAnchor.constraint(equalToConstant: 18),
             dayCounterLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             dayCounterLabel.topAnchor.constraint(equalTo: cardView.bottomAnchor, constant: 16),
             
+            // Plus button
             plusButton.centerYAnchor.constraint(equalTo: dayCounterLabel.centerYAnchor),
             plusButton.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
             plusButton.widthAnchor.constraint(equalToConstant: 34),
@@ -131,6 +137,8 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     func configure(with tracker: Tracker, completedDays: Int, isCompletedToday: Bool, currentDate: Date) {
         
+        let dayCountFormat = String.localizedStringWithFormat(NSLocalizedString("dayCounter", comment: "Number of days complected"), completedDays)
+        
         self.tracker = tracker
         self.trackerId = tracker.id
         self.currentDate = currentDate
@@ -138,7 +146,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         
         emojiLabel.text = tracker.emoji
         nameLabel.text = tracker.name
-        dayCounterLabel.text = completedDays.daysString()
+        dayCounterLabel.text = "\(dayCountFormat)"
         cardView.backgroundColor = tracker.color
         updateButtonAppearance(trackerColor: tracker.color)
     }
@@ -166,4 +174,3 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         onCompletion?(trackerId, currentDate, isCompletedToday)
     }
 }
-

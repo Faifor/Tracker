@@ -36,7 +36,7 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 
 final class TrackerCategoryStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>? 
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
     
     weak var delegate: TrackerCategoryStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -46,19 +46,12 @@ final class TrackerCategoryStore: NSObject {
     
     var categories: [TrackerCategory] {
         guard
-            let objects = self.fetchedResultsController?.fetchedObjects else { return [] }
+            let objects = self.fetchedResultsController.fetchedObjects else { return [] }
         return objects.compactMap{ try? decodeTrackerCategory(from: $0) }
     }
     
     convenience override init() {
-        guard
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        else {
-            assertionFailure("AppDelegate is not of type AppDelegate")
-            self.init(context: NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType))
-            return
-        }
-        let context = appDelegate.persistentContainer.viewContext
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.init(context: context)
     }
     
@@ -75,18 +68,16 @@ final class TrackerCategoryStore: NSObject {
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "title", ascending: true)
         ]
-        let frc = NSFetchedResultsController(
+        fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-        frc.delegate = self
-        
-        fetchedResultsController = frc
+        fetchedResultsController.delegate = self
         
         do {
-            try fetchedResultsController?.performFetch()
+            try fetchedResultsController.performFetch()
         } catch {
             print("failed to initialize FetchedResultsController: \(error)")
         }
@@ -140,7 +131,7 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func fetchAllCategories() throws -> [TrackerCategory] {
-        guard let categories = fetchedResultsController?.fetchedObjects else {
+        guard let categories = fetchedResultsController.fetchedObjects else {
             throw TrackerCategoryStoreError.fetchError(NSError(domain: "", code: -1))
         }
         return try categories.map { try decodeTrackerCategory(from: $0)}
@@ -162,13 +153,9 @@ final class TrackerCategoryStore: NSObject {
             throw TrackerCategoryStoreError.decodingErrorInvalidTitle
         }
         
-        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "category == %@", trackerCategoryCoreData)
-        
         var trackers: [Tracker] = []
-        do {
-            let trackerCoreDatas = try context.fetch(request)
-            trackers = trackerCoreDatas.compactMap { trackerCoreData in
+        if let trackerCoreDataSet = trackerCategoryCoreData.trackers as? Set<TrackerCoreData> {
+            trackers = trackerCoreDataSet.compactMap { trackerCoreData in
                 do {
                     return try decodeTracker(from: trackerCoreData)
                 } catch {
@@ -176,16 +163,13 @@ final class TrackerCategoryStore: NSObject {
                     return nil
                 }
             }
-        } catch {
-            print("Ошибка выборки трекеров категории: \(error)")
         }
-        
         return TrackerCategory(
             title: title,
             trackers: trackers
         )
     }
-        
+    
     func decodeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
         guard let id = trackerCoreData.id,
               let name = trackerCoreData.name,

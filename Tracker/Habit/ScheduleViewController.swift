@@ -33,7 +33,7 @@ class ScheduleViewController: UIViewController {
         let button = UIButton(type: .system)
         button.layer.cornerRadius = 16
         button.backgroundColor = .blackDay
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(LocalizedStrings.done, for: .normal)
         button.setTitleColor(.whiteDay, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
@@ -50,7 +50,7 @@ class ScheduleViewController: UIViewController {
     
     private func configureView() {
         view.backgroundColor = .whiteDay
-        title = "Расписание"
+        title = LocalizedStrings.schedule
     }
     
     private func setupUI() {
@@ -66,11 +66,13 @@ class ScheduleViewController: UIViewController {
     private func setupConstraints() {
         
         NSLayoutConstraint.activate([
+            //Category and Schedule TableView
             scheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             scheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             scheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(Weekday.allCases.count * 75)),
             
+            // Cancel Button
             doneButton.heightAnchor.constraint(equalToConstant: 60),
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -94,7 +96,7 @@ extension ScheduleViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellSchedule", for: indexPath)
         let weekday = Weekday.allCases[indexPath.row]
         cell.textLabel?.text = weekday.fullName
-        cell.backgroundColor = .lightGrayYP
+        cell.backgroundColor = .backgroundDay
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.textLabel?.textColor = .blackDay
         

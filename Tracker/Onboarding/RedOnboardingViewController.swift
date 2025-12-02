@@ -21,7 +21,7 @@ final class RedOnboardingViewController: UIViewController {
         let label = UILabel()
         label.text = "Даже если это не литры воды и йога"
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-        label.textColor = .blackDay
+        label.textColor = .black
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +34,7 @@ final class RedOnboardingViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.setTitle("Вот это технологии!", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.titleLabel?.textColor = .whiteDay
+        button.setTitleColor(.whiteDay, for: .normal)
         button.layer.masksToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)

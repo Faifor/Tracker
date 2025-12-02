@@ -29,7 +29,7 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 
 final class TrackerRecordStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>? 
+    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
     
     weak var delegate: TrackerRecordStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -39,26 +39,18 @@ final class TrackerRecordStore: NSObject {
     
     var records: [TrackerRecord] {
         guard
-            let objects = self.fetchedResultsController?.fetchedObjects else { return [] }
+            let objects = self.fetchedResultsController.fetchedObjects else { return [] }
         return objects.compactMap{ try? decodeTrackerRecord(from: $0) }
     }
     
     convenience override init() {
-        guard
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        else {
-            assertionFailure("AppDelegate is not of type AppDelegate")
-            self.init(context: NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType))
-            return
-        }
-        let context = appDelegate.persistentContainer.viewContext
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.init(context: context)
     }
     
     init(context: NSManagedObjectContext){
         self.context = context
         super.init()
-        
         setupFetchedResultsController()
     }
     
@@ -68,18 +60,16 @@ final class TrackerRecordStore: NSObject {
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "date", ascending: false)
         ]
-        let frc = NSFetchedResultsController(
+        fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-        frc.delegate = self
-        
-        fetchedResultsController = frc
+        fetchedResultsController.delegate = self
         
         do {
-            try fetchedResultsController?.performFetch()
+            try fetchedResultsController.performFetch()
         } catch {
             print("failed to initialize FetchedResultsController: \(error)")
         }
@@ -107,6 +97,7 @@ final class TrackerRecordStore: NSObject {
             try saveContext()
         }
     }
+    
     func fetchTrackerRecord(with trackerId: UUID) throws -> [TrackerRecord] {
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "trackerId == %@", trackerId as CVarArg)
@@ -116,7 +107,7 @@ final class TrackerRecordStore: NSObject {
     }
     
     func fetchAllTrackerRecords() throws -> [TrackerRecord] {
-        guard let records = fetchedResultsController?.fetchedObjects else {
+        guard let records = fetchedResultsController.fetchedObjects else {
             throw TrackerRecordStoreError.fetchError(NSError(domain: "", code: -1))
         }
         return try records.map { try decodeTrackerRecord(from: $0)}

@@ -29,10 +29,10 @@ class NewHabitViewController: UIViewController {
     
     private lazy var nameTrackerTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = LocalizedStrings.trackerPlaceholderName
         textField.textColor = .blackDay
         textField.tintColor = .grayYP
-        textField.backgroundColor = .lightGrayYP
+        textField.backgroundColor = .lightGrayE6
         textField.font = UIFont.systemFont(ofSize: 17)
         textField.layer.cornerRadius = 16
         textField.leftView = UIView(frame: CGRect (x:16, y: 0, width: 17, height: textField.frame.height))
@@ -63,7 +63,7 @@ class NewHabitViewController: UIViewController {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.redYP.cgColor
         button.backgroundColor = .clear
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(LocalizedStrings.cancel, for: .normal)
         button.setTitleColor(.redYP, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
@@ -77,7 +77,7 @@ class NewHabitViewController: UIViewController {
         let button = UIButton(type: .system)
         button.layer.cornerRadius = 16
         button.backgroundColor = .grayYP
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(LocalizedStrings.create, for: .normal)
         button.setTitleColor(.whiteDay, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
@@ -96,7 +96,7 @@ class NewHabitViewController: UIViewController {
     
     private lazy var emojiTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Emoji"
+        label.text = LocalizedStrings.emoji
         label.font = UIFont.systemFont(ofSize: 19, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -111,7 +111,7 @@ class NewHabitViewController: UIViewController {
     
     private lazy var colorTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Цвет"
+        label.text = LocalizedStrings.color
         label.font = UIFont.systemFont(ofSize: 19, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -133,14 +133,13 @@ class NewHabitViewController: UIViewController {
     
     private func configureView() {
         view.backgroundColor = .whiteDay
-        title = "Новая привычка"
+        title = LocalizedStrings.newHabit
     }
     
     private func setupUI() {
         configureView()
         addSubviews()
         setupConstraints()
-        
     }
     
     func addSubviews() {
@@ -150,51 +149,60 @@ class NewHabitViewController: UIViewController {
     }
     
     private func setupConstraints() {
-        
         NSLayoutConstraint.activate([
+            // Scroll View
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
+            //Content View
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
+            // Name Tracker Text Field
             nameTrackerTextField.heightAnchor.constraint(equalToConstant: 75),
             nameTrackerTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             nameTrackerTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nameTrackerTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
+            //Category and Schedule TableView
             categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: 150),
             categoryAndScheduleTableView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 24),
             categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
+            //Emoji Title Label
             emojiTitleLabel.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 32),
             emojiTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
             
+            // Emoji Collection View
             emojiCollectionView.topAnchor.constraint(equalTo: emojiTitleLabel.bottomAnchor, constant: 24),
             emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             emojiCollectionView.heightAnchor.constraint(equalToConstant: 204),
             
+            //Color Title Label
             colorTitleLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
             colorTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
             
+            // Color Collection View
             colorCollectionView.topAnchor.constraint(equalTo: colorTitleLabel.bottomAnchor, constant: 24),
             colorCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             colorCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             colorCollectionView.heightAnchor.constraint(equalToConstant: 204),
             colorCollectionView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24),
             
+            // Cancel Button
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
             cancelButton.widthAnchor.constraint(equalToConstant: 166),
             cancelButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             cancelButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             
+            //Create Button
             createButton.heightAnchor.constraint(equalToConstant: 60),
             createButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             createButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8),
@@ -202,7 +210,7 @@ class NewHabitViewController: UIViewController {
     }
     
     private func categoryButtonTapped() {
-        let categoryVC = CategoryViewController(viewModel: CategoryViewModel())
+        let categoryVC = CategoryViewController()
         categoryVC.delegate = self
         categoryVC.selectedCategory = selectedCategory
         let categoryNC = UINavigationController(rootViewController: categoryVC)
@@ -266,16 +274,16 @@ extension NewHabitViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
-        cell.backgroundColor = .lightGrayYP
+        cell.backgroundColor = .backgroundDay
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.textLabel?.textColor = .blackDay
         cell.accessoryType = .disclosureIndicator
         
         if indexPath.row == 0 {
-            cell.textLabel?.text = "Категория"
+            cell.textLabel?.text = LocalizedStrings.category
             configureCategoryCell(cell)
         } else {
-            cell.textLabel?.text = "Расписание"
+            cell.textLabel?.text = LocalizedStrings.schedule
             
             configureScheduleCell(cell)
         }
@@ -317,14 +325,14 @@ extension NewHabitViewController: ScheduleSelectionDelegate {
     }
     
     private func configureScheduleCell(_ cell: UITableViewCell) {
-        cell.textLabel?.text = "Расписание"
+        cell.textLabel?.text = LocalizedStrings.schedule
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 13)
         cell.detailTextLabel?.textColor = .grayYP
         
         if selectedSchedule.isEmpty {
             cell.detailTextLabel?.text = nil
         } else if selectedSchedule.count == Weekday.allCases.count {
-            cell.detailTextLabel?.text = "Каждый день"
+            cell.detailTextLabel?.text = LocalizedStrings.everyDay
         } else {
             let shortNames = selectedSchedule.sorted { $0.rawValue < $1.rawValue }.map { $0.shortName }
             cell.detailTextLabel?.text = shortNames.joined(separator: ", ")
@@ -344,7 +352,7 @@ extension NewHabitViewController: CategorySelectionDelegate {
     }
     
     func configureCategoryCell(_ cell: UITableViewCell) {
-        cell.textLabel?.text = "Категория"
+        cell.textLabel?.text = LocalizedStrings.category
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 13)
         cell.detailTextLabel?.textColor = .grayYP
         
@@ -352,7 +360,6 @@ extension NewHabitViewController: CategorySelectionDelegate {
             cell.detailTextLabel?.text = selectedCategory
         } else {
             cell.detailTextLabel?.text = nil
-            
         }
     }
 }
