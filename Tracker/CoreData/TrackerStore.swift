@@ -39,7 +39,7 @@ protocol TrackerStoreDelegate: AnyObject {
 
 final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>? 
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     
     weak var delegate: TrackerStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -54,14 +54,13 @@ final class TrackerStore: NSObject {
     }
     
     convenience override init() {
-        guard
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        else {
-            assertionFailure("AppDelegate is not of type AppDelegate")
-            self.init(context: NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType))
-            return
+        let context: NSManagedObjectContext
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            context = appDelegate.persistentContainer.viewContext
+        } else {
+            assertionFailure("Unable to access AppDelegate for persistentContainer")
+            context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         }
-        let context = appDelegate.persistentContainer.viewContext
         self.init(context: context)
     }
     
@@ -77,15 +76,13 @@ final class TrackerStore: NSObject {
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "name", ascending: true)
         ]
-        let frc = NSFetchedResultsController(
+        fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-        frc.delegate = self
-        
-        fetchedResultsController = frc
+        fetchedResultsController?.delegate = self
         
         do {
             try fetchedResultsController?.performFetch()
@@ -124,6 +121,34 @@ final class TrackerStore: NSObject {
         }
     }
     
+    func updateTracker(_ tracker: Tracker, categoryTitle: String) throws {
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        
+        let results = try context.fetch(request)
+        
+        if let trackerToUpdate = results.first {
+            trackerToUpdate.name = tracker.name
+            trackerToUpdate.colorHex = tracker.color.hexString
+            trackerToUpdate.emoji = tracker.emoji
+            
+            do {
+                let scheduleData = try JSONEncoder().encode(tracker.schedule)
+                trackerToUpdate.schedule = scheduleData
+            } catch {
+                print("Ошибка кодирования расписания: \(error)")
+            }
+            let categoryRequest = TrackerCategoryCoreData.fetchRequest()
+            categoryRequest.predicate = NSPredicate(format: "title == %@", categoryTitle)
+            
+            if let newCategory = try context.fetch(categoryRequest).first {
+                trackerToUpdate.category = newCategory
+            }
+            
+            try saveContext()
+        }
+    }
+        
     func deleteTracker(with id: UUID) throws {
         let request = TrackerCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)

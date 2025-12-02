@@ -29,7 +29,7 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 
 final class TrackerRecordStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>? 
+    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>?
     
     weak var delegate: TrackerRecordStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -44,39 +44,34 @@ final class TrackerRecordStore: NSObject {
     }
     
     convenience override init() {
-        guard
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        else {
-            assertionFailure("AppDelegate is not of type AppDelegate")
-            self.init(context: NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType))
-            return
+        let context: NSManagedObjectContext
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            context = appDelegate.persistentContainer.viewContext
+        } else {
+            assertionFailure("Unable to access AppDelegate for persistentContainer")
+            context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         }
-        let context = appDelegate.persistentContainer.viewContext
         self.init(context: context)
     }
     
     init(context: NSManagedObjectContext){
         self.context = context
         super.init()
-        
         setupFetchedResultsController()
     }
     
     private func setupFetchedResultsController() {
-        
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "date", ascending: false)
         ]
-        let frc = NSFetchedResultsController(
+        fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-        frc.delegate = self
-        
-        fetchedResultsController = frc
+        fetchedResultsController?.delegate = self
         
         do {
             try fetchedResultsController?.performFetch()
@@ -107,6 +102,7 @@ final class TrackerRecordStore: NSObject {
             try saveContext()
         }
     }
+    
     func fetchTrackerRecord(with trackerId: UUID) throws -> [TrackerRecord] {
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "trackerId == %@", trackerId as CVarArg)
@@ -187,19 +183,31 @@ extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
     ) {
         switch type {
         case .insert:
-            guard let indexPath = newIndexPath else { fatalError() }
+            guard let indexPath = newIndexPath else {
+                assertionFailure("Received insert event without newIndexPath")
+                return
+            }
             insertedIndexes?.insert(indexPath.item)
         case .delete:
-            guard let indexPath = indexPath else { fatalError() }
+            guard let indexPath = indexPath else {
+                assertionFailure("Received delete event without indexPath")
+                return
+            }
             deletedIndexes?.insert(indexPath.item)
         case .update:
-            guard let indexPath = indexPath else { fatalError() }
+            guard let indexPath = indexPath else {
+                assertionFailure("Received update event without indexPath")
+                return
+            }
             updatedIndexes?.insert(indexPath.item)
         case .move:
-            guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else { fatalError() }
+            guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else {
+                assertionFailure("Received move event without proper indexPath")
+                return
+            }
             movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
         @unknown default:
-            fatalError()
+            assertionFailure("Received unknown NSFetchedResultsChangeType")
         }
     }
 }

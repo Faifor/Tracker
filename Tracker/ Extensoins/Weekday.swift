@@ -10,3 +10,4 @@ extension Weekday {
         return allCases.map { $0.fullName }
     }
 }
+

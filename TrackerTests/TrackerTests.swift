@@ -5,13 +5,32 @@
 //  Created by Данила Спиридонов on 02.10.2025.
 //
 
-import Testing
+import XCTest
+import SnapshotTesting
 @testable import Tracker
 
-struct TrackerTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+final class TrackerTests: XCTestCase {
+    
+    func testTrackersViewControllerLight() {
+        let trackersVC = TrackersViewController()
+        let trackerNC = UINavigationController(rootViewController: trackersVC)
+        
+        trackerNC.overrideUserInterfaceStyle = .light
+        
+        trackersVC.viewDidLoad()
+        
+        assertSnapshot(of: trackerNC, as: .image, record: false)
     }
-
+    
+    func testTrackersViewControllerDark() {
+        let trackersVC = TrackersViewController()
+        let trackerNC = UINavigationController(rootViewController: trackersVC)
+        
+        trackerNC.overrideUserInterfaceStyle = .dark
+        
+        trackersVC.viewDidLoad()
+        
+        assertSnapshot(of: trackerNC, as: .image, record: false)
+    }
+    
 }
