@@ -72,7 +72,7 @@ final class AddCategoryViewController: UIViewController {
     
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGesture.cancelsTouchesInView = false // Позволяет одновременно обрабатывать другие тапы
+        tapGesture.cancelsTouchesInView = false 
         view.addGestureRecognizer(tapGesture)
     }
     

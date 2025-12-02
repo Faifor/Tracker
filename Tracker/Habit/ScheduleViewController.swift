@@ -66,13 +66,11 @@ class ScheduleViewController: UIViewController {
     private func setupConstraints() {
         
         NSLayoutConstraint.activate([
-            //Category and Schedule TableView
             scheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             scheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             scheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(Weekday.allCases.count * 75)),
             
-            // Cancel Button
             doneButton.heightAnchor.constraint(equalToConstant: 60),
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),

@@ -123,29 +123,23 @@ final class StatisticsViewController: UIViewController {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             
-            // Statistics label
             statisticsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             statisticsLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             
-            //Statistics Card View
             statisticsCardView.topAnchor.constraint(equalTo: statisticsLabel.bottomAnchor, constant: 77),
             statisticsCardView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             statisticsCardView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             statisticsCardView.heightAnchor.constraint(equalToConstant: 90),
             
-            //Statistics Value Label
             statisticsValueLabel.leadingAnchor.constraint(equalTo: statisticsCardView.leadingAnchor, constant: 12),
             statisticsValueLabel.topAnchor.constraint(equalTo: statisticsCardView.topAnchor, constant: 12),
             
-            // Statistics Title Label
             statisticsTitleLabel.leadingAnchor.constraint(equalTo: statisticsCardView.leadingAnchor, constant: 12),
             statisticsTitleLabel.topAnchor.constraint(equalTo: statisticsValueLabel.bottomAnchor, constant: 7),
             
-            //Placeholder Image
             placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
             placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
             
-            // Placeholder stack
             placeholderStack.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             placeholderStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 331)
             

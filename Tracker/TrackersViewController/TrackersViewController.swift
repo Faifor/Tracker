@@ -11,7 +11,25 @@ class TrackersViewController: UIViewController {
         calendar.firstWeekday = 2
         return calendar
     }()
-    private var trackerAddingButton: UIButton!
+    private lazy var trackerAddingButton: UIButton = {
+        let button: UIButton
+        if let trackerAddingImage = UIImage(named: "trackerAddingImage") {
+            button = UIButton.systemButton(
+                with: trackerAddingImage,
+                target: self,
+                action: #selector(Self.addTrackersButton)
+            )
+        } else {
+            assertionFailure("Failed to load tracker adding image")
+            let tmp = UIButton(type: .system)
+            tmp.setTitle("+", for: .normal)
+            tmp.addTarget(self, action: #selector(Self.addTrackersButton), for: .touchUpInside)
+            button = tmp
+        }
+        button.tintColor = .blackDay
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
     private var currentDate = Date()
     private var visibleCategories: [TrackerCategory] = []
     private var categories: [TrackerCategory] = [] {
@@ -286,17 +304,6 @@ class TrackersViewController: UIViewController {
     }
     
     private func setupBarButtonItem() {
-        guard let trackerAddingImage = UIImage(named: "trackerAddingImage") else {
-            assertionFailure("Failed to load tracker adding image")
-            return
-        }
-        trackerAddingButton = UIButton.systemButton(
-            with: trackerAddingImage,
-            target: self,
-            action: #selector(Self.addTrackersButton))
-        trackerAddingButton.tintColor = .blackDay
-        
-        trackerAddingButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(trackerAddingButton)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: trackerAddingButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
@@ -640,4 +647,3 @@ extension TrackersViewController: FiltersSelectionDelegate {
         currentFilter = filter
     }
 }
-

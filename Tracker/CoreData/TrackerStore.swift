@@ -39,7 +39,7 @@ protocol TrackerStoreDelegate: AnyObject {
 
 final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     
     weak var delegate: TrackerStoreDelegate?
     private var insertedIndexes: IndexSet?
@@ -49,12 +49,18 @@ final class TrackerStore: NSObject {
     
     var tracker: [Tracker] {
         guard
-            let objects = self.fetchedResultsController.fetchedObjects else { return [] }
+            let objects = self.fetchedResultsController?.fetchedObjects else { return [] }
         return objects.compactMap{ try? decodeTracker(from: $0) }
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let context: NSManagedObjectContext
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            context = appDelegate.persistentContainer.viewContext
+        } else {
+            assertionFailure("Unable to access AppDelegate for persistentContainer")
+            context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        }
         self.init(context: context)
     }
     
@@ -76,10 +82,10 @@ final class TrackerStore: NSObject {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
-        fetchedResultsController.delegate = self
+        fetchedResultsController?.delegate = self
         
         do {
-            try fetchedResultsController.performFetch()
+            try fetchedResultsController?.performFetch()
         } catch {
             print("failed to initialize FetchedResultsController: \(error)")
         }
@@ -164,7 +170,7 @@ final class TrackerStore: NSObject {
     }
     
     func fetchAllTrackers() throws -> [Tracker] {
-        guard let trackers = fetchedResultsController.fetchedObjects else {
+        guard let trackers = fetchedResultsController?.fetchedObjects else {
             throw TrackerStoreError.fetchError(NSError(domain: "", code: -1))
         }
         return try trackers.map { try decodeTracker(from: $0)}

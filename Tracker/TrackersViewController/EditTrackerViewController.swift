@@ -75,7 +75,6 @@ final class EditTrackerViewController: UIViewController {
         tableView.dataSource = self
         tableView.separatorStyle = .singleLine
         tableView.clipsToBounds = true
-        //tableView.isScrollEnabled = false
         let layer = tableView.layer
         layer.cornerRadius = 16
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -181,7 +180,7 @@ final class EditTrackerViewController: UIViewController {
     
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGesture.cancelsTouchesInView = false // Позволяет одновременно обрабатывать другие тапы
+        tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
     
@@ -207,63 +206,52 @@ final class EditTrackerViewController: UIViewController {
     private func setupConstraints() {
         
         NSLayoutConstraint.activate([
-            // Scroll View
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            //Content View
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            // Days Counter Label
             daysCounterLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             daysCounterLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
-            // Name Tracker Text Field
             nameTrackerTextField.heightAnchor.constraint(equalToConstant: 75),
             nameTrackerTextField.topAnchor.constraint(equalTo: daysCounterLabel.bottomAnchor, constant: 40),
             nameTrackerTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nameTrackerTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            //Category and Schedule TableView
             categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: 150),
             categoryAndScheduleTableView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 24),
             categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            //Emoji Title Label
             emojiTitleLabel.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 32),
             emojiTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
             
-            // Emoji Collection View
             emojiCollectionView.topAnchor.constraint(equalTo: emojiTitleLabel.bottomAnchor, constant: 24),
             emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             emojiCollectionView.heightAnchor.constraint(equalToConstant: 204),
             
-            //Color Title Label
             colorTitleLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
             colorTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 28),
             
-            // Color Collection View
             colorCollectionView.topAnchor.constraint(equalTo: colorTitleLabel.bottomAnchor, constant: 24),
             colorCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             colorCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             colorCollectionView.heightAnchor.constraint(equalToConstant: 204),
             colorCollectionView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -24),
             
-            // Cancel Button
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
             cancelButton.widthAnchor.constraint(equalToConstant: 166),
             cancelButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             cancelButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             
-            //Create Button
             saveButton.heightAnchor.constraint(equalToConstant: 60),
             saveButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             saveButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8),
